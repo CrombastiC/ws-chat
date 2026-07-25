@@ -7,7 +7,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 function ConnectionPanel({ onConnected }: { onConnected: () => void }) {
   const [userId, setUserId] = useState("");
   const [userName, setUserName] = useState("");
-  const [serverUrl, setServerUrl] = useState("ws://127.0.0.1:8080");
+  const [serverUrl, setServerUrl] = useState("ws://192.168.1.113:8080");
   const { connect } = useWebSocket();
   const connection = useChatStore((s) => s.connection);
 
@@ -60,17 +60,20 @@ function ConnectionPanel({ onConnected }: { onConnected: () => void }) {
             disabled={!userId.trim() || !userName.trim() || connection.status === "connecting"}
             className="w-full py-2.5 rounded-lg bg-chat-accent hover:bg-chat-accent/80 font-medium transition-colors disabled:opacity-40"
           >
-            {connection.status === "connecting" ? "连接中..." : "连接"}
+            {connection.status === "connecting" ? "连接中..." : connection.status === "connected" ? "已连接 ✓" : "连接"}
           </button>
 
           {connection.status === "error" && (
-            <p className="text-red-400 text-sm text-center">{connection.error}</p>
+            <p className="text-red-400 text-sm text-center">连接失败：{connection.error}</p>
+          )}
+          {connection.status === "connected" && (
+            <p className="text-green-400 text-sm text-center">连接成功！正在进入聊天...</p>
           )}
         </div>
 
         <div className="mt-6 pt-4 border-t border-neutral-700/50 text-xs text-neutral-500">
           <p className="mb-1">💡 使用方法：</p>
-          <p>1. 让对方先启动服务器（chat-server）</p>
+          <p>1. 让对方先启动服务器</p>
           <p>2. 填入对方 IP 和端口</p>
           <p>3. 双方用不同的 user_id 连接即可聊天</p>
         </div>
@@ -83,7 +86,8 @@ export default function App() {
   const [connected, setConnected] = useState(false);
   const connection = useChatStore((s) => s.connection);
 
-  if (!connected || connection.status === "disconnected") {
+  // 只有用户点击了连接且连接成功/连接中，才显示聊天界面
+  if (!connected || (connection.status !== "connected" && connection.status !== "connecting")) {
     return <ConnectionPanel onConnected={() => setConnected(true)} />;
   }
 
