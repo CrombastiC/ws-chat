@@ -9,6 +9,9 @@ on:
 jobs:
   build-windows:
     runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: chat-client
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,8 +24,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
+          cache-dependency-path: chat-client/package-lock.json
 
       - name: Install dependencies
         run: npm install
@@ -36,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chat-client-windows
-          path: src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+          path: chat-client/src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
