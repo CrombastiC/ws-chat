@@ -64,10 +64,9 @@ function ConnectionPanel({ onConnected }: { onConnected: () => void }) {
           </button>
 
           {connection.status === "error" && (
-            <p className="text-red-400 text-sm text-center">连接失败：{connection.error}</p>
-          )}
-          {connection.status === "connected" && (
-            <p className="text-green-400 text-sm text-center">连接成功！正在进入聊天...</p>
+            <div className="text-red-400 text-sm text-center bg-red-400/10 rounded-lg p-2">
+              ✗ 连接失败：{connection.error || "请检查服务器地址和网络"}
+            </div>
           )}
         </div>
 
@@ -86,8 +85,11 @@ export default function App() {
   const [connected, setConnected] = useState(false);
   const connection = useChatStore((s) => s.connection);
 
-  // 只有用户点击了连接且连接成功/连接中，才显示聊天界面
-  if (!connected || (connection.status !== "connected" && connection.status !== "connecting")) {
+  // 未连接、连接失败、断开 → 显示登录面板
+  // 连接中、已连接 → 显示聊天界面
+  const showChat = connected && (connection.status === "connected" || connection.status === "connecting");
+
+  if (!showChat) {
     return <ConnectionPanel onConnected={() => setConnected(true)} />;
   }
 
