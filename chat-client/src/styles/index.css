@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-chat-bg: #1a1a2e;
+  --color-chat-sidebar: #16213e;
+  --color-chat-input: #0f3460;
+  --color-chat-accent: #533483;
+  --color-chat-bubble-self: #2d4a7a;
+  --color-chat-bubble-other: #2a2a4a;
+  --color-chat-hover: rgba(83, 52, 131, 0.2);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-chat-accent);
+  border-radius: 3px;
+}
